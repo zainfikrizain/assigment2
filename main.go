@@ -2,34 +2,23 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
-	"os"
-	"strings"
-
-	"github.com/spf13/viper"
 )
 
-type Config struct {
-	Port string `mapstructure: "PORT"`
-}
-
 func main() {
-	viper.AutomaticEnv()
-	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
+	config := LoadConfig()
 
-	if _, err := os.Stat(".env"); err == nil {
-		viper.SetConfigFile(".env")
-		_ = viper.ReadInConfig()
+	// Default port fallback
+	if config.Port == "" {
+		config.Port = "8080"
 	}
-	config := Config{
-		Port: viper.GetString("PORT"),
-	}
+
 	addr := "0.0.0.0:" + config.Port
 	fmt.Println("Server running di", addr)
 
 	err := http.ListenAndServe(addr, nil)
 	if err != nil {
-		fmt.Println("gagal running server", err)
+		log.Fatal("gagal running server:", err)
 	}
-
 }
