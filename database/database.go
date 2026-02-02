@@ -7,7 +7,7 @@ import (
 	_ "github.com/lib/pq"
 )
 
-func InintDB(connectionString string) (*sql.DB, error) {
+func InitDB(connectionString string) (*sql.DB, error) {
 	db, err := sql.Open("postgres", connectionString)
 	if err != nil {
 		return nil, err
